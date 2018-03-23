@@ -244,7 +244,12 @@ func (state *HelmState) DiffReleases(helm helmexec.Interface, additionalValues [
 			for release := range jobQueue {
 				errs := []error{}
 				// Plugin command doesn't support explicit namespace
+				var chart = release.Chart
+				if release.Version != "" {
+					chart = chart + "@" + release.Version
+				}
 				release.Namespace = ""
+				release.Version = ""
 				flags, err := flagsForRelease(helm, state.BaseChartPath, release)
 				if err != nil {
 					errs = append(errs, err)
@@ -262,7 +267,7 @@ func (state *HelmState) DiffReleases(helm helmexec.Interface, additionalValues [
 				}
 
 				if len(errs) == 0 {
-					if err := helm.DiffRelease(release.Name, normalizeChart(state.BaseChartPath, release.Chart), flags...); err != nil {
+					if err := helm.DiffRelease(release.Name, normalizeChart(state.BaseChartPath, chart), flags...); err != nil {
 						errs = append(errs, err)
 					}
 				}
