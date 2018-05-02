@@ -24,6 +24,7 @@ import (
 type HelmState struct {
 	BaseChartPath      string
 	Context            string           `yaml:"context"`
+	TillerNamespace    string           `yaml:"tillerNamespace"`
 	DeprecatedReleases []ReleaseSpec    `yaml:"charts"`
 	Namespace          string           `yaml:"namespace"`
 	Repositories       []RepositorySpec `yaml:"repositories"`

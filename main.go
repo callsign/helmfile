@@ -300,6 +300,11 @@ func before(c *cli.Context) (*state.HelmState, helmexec.Interface, error) {
 		}
 		kubeContext = st.Context
 	}
+
+	if st.TillerNamespace != "" {
+		os.Setenv("TILLER_NAMESPACE", st.TillerNamespace)
+	}
+
 	if namespace != "" {
 		if st.Namespace != "" {
 			log.Printf("err: Cannot use option --namespace and set attribute namespace.")
