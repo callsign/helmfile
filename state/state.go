@@ -47,12 +47,13 @@ type ReleaseSpec struct {
 	Verify  bool   `yaml:"verify"`
 
 	// Name is the name of this release
-	Name      string            `yaml:"name"`
-	Namespace string            `yaml:"namespace"`
-	Labels    map[string]string `yaml:"labels"`
-	Values    []string          `yaml:"values"`
-	Secrets   []string          `yaml:"secrets"`
-	SetValues []SetValue        `yaml:"set"`
+	Name               string            `yaml:"name"`
+	Namespace          string            `yaml:"namespace"`
+	Labels             map[string]string `yaml:"labels"`
+	NoDependencyUpdate bool              `yaml:"noDependencyUpdate"`
+	Values             []string          `yaml:"values"`
+	Secrets            []string          `yaml:"secrets"`
+	SetValues          []SetValue        `yaml:"set"`
 
 	// The 'env' section is not really necessary any longer, as 'set' would now provide the same functionality
 	EnvValues []SetValue `yaml:"env"`
@@ -430,7 +431,8 @@ func (state *HelmState) UpdateDeps(helm helmexec.Interface) []error {
 	errs := []error{}
 
 	for _, release := range state.Releases {
-		if isLocalChart(release.Chart) {
+
+		if isLocalChart(release.Chart) && release.NoDependencyUpdate == false {
 			if err := helm.UpdateDeps(normalizeChart(state.BaseChartPath, release.Chart)); err != nil {
 				errs = append(errs, err)
 			}
