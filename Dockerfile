@@ -7,7 +7,7 @@ RUN make static-linux
 
 # -----------------------------------------------------------------------------
 
-FROM alpine:3.7
+FROM alpine:3.22.0
 
 RUN apk add --no-cache ca-certificates git bash curl
 
